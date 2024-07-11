@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.saloncanvasparametrizada.ui.theme.SalonCanvasParametrizadaTheme
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -48,11 +50,11 @@ fun GalleryCanvasScreen(modifier: Modifier = Modifier) {
         e.printStackTrace()
     }
 
-    GalleryCanvas(
-        context = context,
-        attrs = null,
-        rooms = rooms,
-        pictures = pictures
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            GalleryCanvas(context, null, rooms, pictures)
+        }
     )
 }
 
@@ -82,14 +84,23 @@ private fun readDataFromCsv(
             }
             if (currentRoom != null) {
                 currentRoom.points.addAll(points)
+                // Log vertices of the current room
+                points.forEachIndexed { index, point ->
+                    Log.d("RoomVertices", "Room ${currentRoom.name}, Vertex $index: (${point.x}, ${point.y})")
+                }
             } else if (currentPicture != null) {
                 currentPicture.points.addAll(points)
+                // Log vertices of the current picture
+                points.forEachIndexed { index, point ->
+                    Log.d("PictureVertices", "Picture ${currentPicture.title}, Vertex $index: (${point.x}, ${point.y})")
+                }
             }
         }
     }
 
     reader.close()
 }
+
 
 @Preview(showBackground = true)
 @Composable

@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import kotlin.random.Random
 
 class GalleryCanvas(
     context: Context,
@@ -25,6 +26,7 @@ class GalleryCanvas(
     private val picturePaint = Paint().apply {
         style = Paint.Style.FILL
         textSize = 24f
+        color = Color.BLACK
     }
     private val gridPaint = Paint().apply {
         color = Color.LTGRAY
@@ -34,7 +36,7 @@ class GalleryCanvas(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.WHITE) // Fondo blanco
+        canvas.drawColor(Color.WHITE)
         drawGrid(canvas)
         drawRooms(canvas)
         drawPictures(canvas)
@@ -86,7 +88,7 @@ class GalleryCanvas(
     }
 
     private fun drawGrid(canvas: Canvas) {
-        val gridSize = 100f // Tamaño de cada cuadrícula (en unidades)
+        val gridSize = 100f
         for (x in 0..canvasWidth.toInt() step gridSize.toInt()) {
             canvas.drawLine(x.toFloat(), 0f, x.toFloat(), canvasHeight, gridPaint)
         }
@@ -103,6 +105,13 @@ class GalleryCanvas(
                 path.lineTo(room.points[i].x * canvasWidth / 1000f, room.points[i].y * canvasHeight / 1000f)
             }
             path.close()
+
+            // Generar un color aleatorio para cada sala
+            roomPaint.color = Color.rgb(
+                Random.nextInt(256),
+                Random.nextInt(256),
+                Random.nextInt(256)
+            )
             canvas.drawPath(path, roomPaint)
 
             // Dibujar el nombre de la habitación
@@ -115,7 +124,7 @@ class GalleryCanvas(
 
     private fun drawPictures(canvas: Canvas) {
         pictures.forEach { picture ->
-            picturePaint.color = Color.WHITE
+            picturePaint.color = Color.YELLOW
             picture.points.forEach { point ->
                 canvas.drawCircle(point.x * canvasWidth / 1000f, point.y * canvasHeight / 1000f, 20f, picturePaint)
             }
